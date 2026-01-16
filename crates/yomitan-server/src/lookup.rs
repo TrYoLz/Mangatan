@@ -4,7 +4,7 @@ use std::{
 };
 
 use lindera::{
-    dictionary::{DictionaryKind, load_dictionary_from_kind},
+    dictionary::{DictionaryKind, load_embedded_dictionary},
     mode::Mode,
     segmenter::Segmenter,
     tokenizer::Tokenizer,
@@ -37,7 +37,7 @@ enum Script {
 impl LookupService {
     pub fn new() -> Self {
         info!("⏳ [Lookup] Initializing Lindera (UniDic)...");
-        let dictionary = load_dictionary_from_kind(DictionaryKind::UniDic)
+        let dictionary = load_embedded_dictionary(DictionaryKind::UniDic)
             .expect("Failed to load UniDic dictionary");
 
         let segmenter = Segmenter::new(Mode::Normal, dictionary, None);
@@ -279,7 +279,7 @@ impl LookupService {
                             if *lemma != "*" && *lemma != text {
                                 candidates.push(Candidate {
                                     word: lemma.to_string(),
-                                    source_len: first_token.text.chars().count(),
+                                    source_len: first_token.position_length,
                                     _reason: "Lindera".to_string(),
                                 });
                             }
